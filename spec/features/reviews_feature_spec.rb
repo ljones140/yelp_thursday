@@ -1,10 +1,13 @@
 require 'rails_helper'
 
 feature 'reviewing' do
-  before {Restaurant.create name: 'KFC'}
+
+  before do
+    Restaurant.create name: 'KFC'
+    register_user
+  end
 
   scenario 'allows users to leave a review using a form' do
-    register_user
     visit '/restaurants'
     click_link 'Review KFC'
     fill_in "Thoughts", with: "so so"
@@ -13,6 +16,21 @@ feature 'reviewing' do
     expect(current_path).to eq '/restaurants'
     expect(page).to have_content('so so')
   end
+
+  scenario 'user can only leave one review per restaurant' do
+    visit '/restaurants'
+    click_link 'Review KFC'
+    fill_in "Thoughts", with: "so so"
+    select '3', from: 'Rating'
+    click_button 'Leave Review'
+    expect(current_path).to eq '/restaurants'
+    expect(page).to have_content('so so')
+    visit '/restaurants'
+    click_link 'Review KFC'
+    expect(page).not_to have_button('Leave Review')
+    # expect(page).to have_content('placeholder error')
+  end
+
 end
 
 #feature 'deleting reviews' do
