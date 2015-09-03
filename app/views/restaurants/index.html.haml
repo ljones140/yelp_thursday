@@ -17,6 +17,7 @@
         - restaurant.reviews.each do |review|
           %li
             = review.thoughts
+            = review.user_id
             %strong= review.rating
             \/5
     - else

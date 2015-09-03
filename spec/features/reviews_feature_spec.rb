@@ -3,8 +3,9 @@ require 'rails_helper'
 feature 'reviewing' do
 
   before do
-    Restaurant.create name: 'KFC'
+    # Restaurant.create name: 'KFC'
     register_user
+    create_restaurant
   end
 
   scenario 'allows users to leave a review using a form' do
@@ -14,7 +15,7 @@ feature 'reviewing' do
     select '3', from: 'Rating'
     click_button 'Leave Review'
     expect(current_path).to eq '/restaurants'
-    expect(page).to have_content('so so')
+    expect(page).to have_content('3 /5')
   end
 
   scenario 'user can only leave one review per restaurant' do
@@ -28,7 +29,7 @@ feature 'reviewing' do
     visit '/restaurants'
     click_link 'Review KFC'
     expect(page).not_to have_button('Leave Review')
-    # expect(page).to have_content('placeholder error')
+    #expect(page).to have_content('placeholder error')
   end
 
 end
